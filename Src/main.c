@@ -35,6 +35,31 @@
   *
   ******************************************************************************
   */
+
+/**
+ * @brief This application converts three different signals of three different
+ * configureable channels with three Analog Digital Converter (ADC). Each ADC
+ * works at the "Single-channel, single conversion mode" triggered by a timer.
+ * The conversion of ADC is triggered by a own timer. Depending on the
+ * configuration of the three timers the values are converted simultaneous or
+ * not. The sampling rate of each ADC can be configured independently. The
+ * measurement is started by pressing the user button (PA0) for one second and
+ * stopped by pressing it for 5 seconds. On rising and falling edge an interrupt
+ * gets generated. On rising edge a flag is set and the time gets saved. On
+ * falling edge the flag gets resetted and the time difference betweeng rising
+ * and falling edge gets calculated. Depending on the result the measrument gets
+ * started (if not already running) or stopped (if not already stopped). During
+ * the initialization all information and errors can be printed out via printf
+ * depending on the configuration. If the application is ready to start the
+ * measurements the green led will be turned on. On errors the red led will be
+ * turned on. During measurements the green led will blink after a new
+ * conversion was finished successfully. All the configurations of the system
+ * can be found in the configuration.h.
+ * @author Dennis Stumm
+ * @date 2019-2020
+ * @version 1.0
+ */
+
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "stm32f4xx_hal.h"
