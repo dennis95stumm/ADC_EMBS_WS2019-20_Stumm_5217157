@@ -38,23 +38,43 @@
 
 /**
  * @brief This application converts three different signals of three different
- * configureable channels with three Analog Digital Converter (ADC). Each ADC
- * works at the "Single-channel, single conversion mode" triggered by a timer.
- * The conversion of ADC is triggered by a own timer. Depending on the
- * configuration of the three timers the values are converted simultaneous or
- * not. The sampling rate of each ADC can be configured independently. The
- * measurement is started by pressing the user button (PA0) for one second and
- * stopped by pressing it for 5 seconds. On rising and falling edge an interrupt
- * gets generated. On rising edge a flag is set and the time gets saved. On
- * falling edge the flag gets resetted and the time difference betweeng rising
+ * configureable channels with three Analog to Digital Converter (ADC). Each ADC
+ * works independently from the other at the "Single-channel, single conversion
+ * mode" triggered by a timer. The signal conversion is triggered by a own timer
+ * for each ADC. Depending on the configuration of the three timers the values
+ * are converted simultaneous or not. The sampling rate of each ADC can be
+ * configured independently. The measurement is started by pressing the user
+ * button (PA0) for one second and stopped by pressing it for 5 seconds. On
+ * rising and falling edge an interrupt gets generated. On rising edge the time
+ * of pressure gets saved. On falling edge the time difference betweeng rising
  * and falling edge gets calculated. Depending on the result the measrument gets
- * started (if not already running) or stopped (if not already stopped). During
- * the initialization all information and errors can be printed out via printf
+ * started (if not already running) or stopped (if not already stopped). The
+ * conversion gets started by starting the corresponding timers and adc and
+ * stopped by stopping the corresponding timers and adc. During the
+ * initialization all information and errors can be printed out via printf
  * depending on the configuration. If the application is ready to start the
  * measurements the green led will be turned on. On errors the red led will be
  * turned on. During measurements the green led will blink after a new
  * conversion was finished successfully. All the configurations of the system
  * can be found in the configuration.h.
+ * @test To ensure that the red led is turned on if an error, e.g. wrong
+ *   configuration, occurs, the configuration is setup incorrect.
+ * @test To ensure that the green led is turned on when the measurement is ready
+ *   to start, a flag is turned on that indicates that the system is ready,
+ *   which is checked with the STMStudio.
+ * @test To ensure that the switch functionallity works correctly the time
+ *   of rising, falling edge and their difference is saved into variables, which
+ *   displayed in the STMStudio. Also a counter var is declared, which is
+ *   increased by each rising edge, so it can be checked how many times the
+ *   user button was intended as pressed and it was really pressed.
+ * @test The converted value of each ADC gets persisted to a own variable, that
+ *   is checked with the STMStudio. To check the functionallity, the PIN is set
+ *   to GND (0 V) and to 3 V.
+ * @test The value of the SystemTick Timer gets persisted on each EOC interrupt
+ *   so that the difference between the conversion of the signals of all three
+ *   channels can be checked.
+ * @test The printf configurability is checked with the ST-Link Utility by
+ *    enabling or disabling the corresponding print informations.
  * @author Dennis Stumm
  * @date 2019-2020
  * @version 1.0
