@@ -54,9 +54,8 @@
  * initialization all information and errors can be printed out via printf
  * depending on the configuration. If the application is ready to start the
  * measurements the green led will be turned on. On errors the red led will be
- * turned on. During measurements the green led will blink after a new
- * conversion was finished successfully. All the configurations of the system
- * can be found in the configuration.h.
+ * turned on. During measurements the green led will blink. All the
+ * configurations of the system can be found in the configuration.h.
  * @test To ensure that the red led is turned on if an error, e.g. wrong
  *   configuration, occurs, the configuration is setup incorrect.
  * @test To ensure that the green led is turned on when the measurement is ready
