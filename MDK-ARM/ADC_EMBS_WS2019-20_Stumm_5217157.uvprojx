@@ -451,6 +451,11 @@
               <FilePath>..\Inc\tim.h</FilePath>
             </File>
             <File>
+              <FileName>debug.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\debug.c</FilePath>
+            </File>
+            <File>
               <FileName>configuration.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\Inc\configuration.h</FilePath>

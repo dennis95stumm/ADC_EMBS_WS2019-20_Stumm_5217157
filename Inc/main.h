@@ -41,7 +41,7 @@
   /* Includes ------------------------------------------------------------------*/
 
 /* USER CODE BEGIN Includes */
-
+#include "configuration.h"
 /* USER CODE END Includes */
 
 /* Private define ------------------------------------------------------------*/
@@ -59,9 +59,17 @@
 #define red_led_Pin GPIO_PIN_14
 #define red_led_GPIO_Port GPIOG
 
-/* USER CODE BEGIN Private defines */
+#ifdef DEBUG_INFO
+#define print_info(...) printf("INFO: "); printf(__VA_ARGS__); printf("\n");
+#else
+#define print_info(...) ((void)0)
+#endif
 
-/* USER CODE END Private defines */
+#ifdef DEBUG_ERROR
+#define print_error(...) printf("ERROR: "); printf(__VA_ARGS__); printf("\n");
+#else
+#define print_error(...) ((void)0)
+#endif
 
 void _Error_Handler(char *, int);
 
