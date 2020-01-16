@@ -126,6 +126,8 @@ int main(void)
   MX_TIM8_Init();
   print_info("### Initialization of timer for ADC3 finished ###");
 
+  HAL_GPIO_WritePin(green_led_GPIO_Port, green_led_Pin, GPIO_PIN_SET);
+
   /* Infinite loop */
   while (1)
   {
