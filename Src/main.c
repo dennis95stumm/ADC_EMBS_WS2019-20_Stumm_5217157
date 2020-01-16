@@ -41,7 +41,7 @@
   * for each ADC. Depending on the configuration of the three timers the values
   * are converted simultaneous or not. The sampling rate of each ADC can be
   * configured independently. The measurement is started by pressing the user
-  * button (PA0) for one second and stopped by pressing it for 5 seconds. On
+  * button (PA0) for a defined time and stopped by pressing it for defined time. On
   * rising and falling edge an interrupt gets generated. On rising edge the time
   * of pressure gets saved. On falling edge the time difference betweeng rising
   * and falling edge gets calculated. Depending on the result the measrument gets
