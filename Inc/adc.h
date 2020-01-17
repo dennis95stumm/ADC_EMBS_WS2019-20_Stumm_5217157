@@ -52,6 +52,17 @@ extern ADC_HandleTypeDef hadc1;
 extern ADC_HandleTypeDef hadc2;
 extern ADC_HandleTypeDef hadc3;
 
+#ifdef DEBUG_INFO
+extern uint32_t adc1_last_eoc;
+extern uint32_t adc1_conversion_time;
+
+extern uint32_t adc2_last_eoc;
+extern uint32_t adc2_conversion_time;
+
+extern uint32_t adc3_last_eoc;
+extern uint32_t adc3_conversion_time;
+#endif
+
 extern void _Error_Handler(char *, int);
 
 void MX_ADC1_Init(void);

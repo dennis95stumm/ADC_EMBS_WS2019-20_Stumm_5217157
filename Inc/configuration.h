@@ -33,7 +33,12 @@
 
 /* Configuration of sampling rate -------------------------------------------*/
 
-
+/**
+ * TODO: Add documentation max: 36585 Hz (ADC Clock(SysClk/APB1Presc/ADCPresc) divided by the sample time+resolution to get one value) min: 1 Hz
+ */
+#define ADC1_SAMPLE_RATE 10
+#define ADC2_SAMPLE_RATE 10
+#define ADC3_SAMPLE_RATE 10
 
 /* Configuration of GPIO ports and pins -------------------------------------*/
 /**
@@ -113,12 +118,18 @@
 #define SYSCLK_APB1CLK_DIV RCC_HCLK_DIV4
 #define SYSCLK_APB2CLK_DIV RCC_HCLK_DIV4
 #define SYSCLK_FLASH_LATENCY FLASH_LATENCY_4
+#define TIMER_CLK_FREQUENCY 72000000
 
 /* ADC1 timer configuration -------------------------------------------------*/
 
 #define ADC1_TIMER_INSTANCE TIM2
+#if (TIMER_CLK_FREQUENCY/ADC1_SAMPLE_RATE) > 10000
+#define ADC1_TIMER_PRESCALER 10000-1
+#define ADC1_TIMER_PERIOD ((TIMER_CLK_FREQUENCY/ADC1_SAMPLE_RATE)/10000) - 1
+#else
 #define ADC1_TIMER_PRESCALER 0
-#define ADC1_TIMER_PERIOD 1968
+#define ADC1_TIMER_PERIOD (TIMER_CLK_FREQUENCY/ADC1_SAMPLE_RATE) - 1
+#endif
 #define ADC1_TIMER_CLOCK_DIVISION TIM_CLOCKDIVISION_DIV1
 #define ADC1_TIMER_CLK_ENABLE() __HAL_RCC_TIM2_CLK_ENABLE()
 #define ADC1_TIMER_CLK_DISABLE() __HAL_RCC_TIM2_CLK_DISABLE()
@@ -126,8 +137,13 @@
 /* ADC2 timer configuration -------------------------------------------------*/
 
 #define ADC2_TIMER_INSTANCE TIM3
+#if (TIMER_CLK_FREQUENCY/ADC2_SAMPLE_RATE) > 10000
+#define ADC2_TIMER_PRESCALER 10000-1
+#define ADC2_TIMER_PERIOD ((TIMER_CLK_FREQUENCY/ADC2_SAMPLE_RATE)/10000) - 1
+#else
 #define ADC2_TIMER_PRESCALER 0
-#define ADC2_TIMER_PERIOD 1968
+#define ADC2_TIMER_PERIOD (TIMER_CLK_FREQUENCY/ADC2_SAMPLE_RATE) - 1
+#endif
 #define ADC2_TIMER_CLOCK_DIVISION TIM_CLOCKDIVISION_DIV1
 #define ADC2_TIMER_CLK_ENABLE() __HAL_RCC_TIM3_CLK_ENABLE()
 #define ADC2_TIMER_CLK_DISABLE() __HAL_RCC_TIM3_CLK_DISABLE()
@@ -135,8 +151,13 @@
 /* ADC3 timer configuration -------------------------------------------------*/
 
 #define ADC3_TIMER_INSTANCE TIM8
+#if (TIMER_CLK_FREQUENCY/ADC3_SAMPLE_RATE) > 10000
+#define ADC3_TIMER_PRESCALER 10000-1
+#define ADC3_TIMER_PERIOD ((TIMER_CLK_FREQUENCY/ADC3_SAMPLE_RATE)/10000) - 1
+#else
 #define ADC3_TIMER_PRESCALER 0
-#define ADC3_TIMER_PERIOD 1968
+#define ADC3_TIMER_PERIOD (TIMER_CLK_FREQUENCY/ADC3_SAMPLE_RATE) - 1
+#endif
 #define ADC3_TIMER_CLOCK_DIVISION TIM_CLOCKDIVISION_DIV1
 #define ADC3_TIMER_CLK_ENABLE() __HAL_RCC_TIM8_CLK_ENABLE()
 #define ADC3_TIMER_CLK_DISABLE() __HAL_RCC_TIM8_CLK_DISABLE()

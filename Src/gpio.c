@@ -132,6 +132,13 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
         print_info("Starting conversion...\n############################################");
         HAL_GPIO_WritePin(success_led_GPIO_Port, success_led_Pin, GPIO_PIN_RESET);
 
+        #ifdef DEBUG_INFO
+        // Reset debugging vars
+        adc1_last_eoc = HAL_GetTick();
+        adc2_last_eoc = HAL_GetTick();
+        adc3_last_eoc = HAL_GetTick();
+        #endif
+
         // ADC1
         if(HAL_ADC_Start_IT(&hadc1) != HAL_OK)
         {
@@ -209,6 +216,13 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
           /* Stop Conversation Error */
           _Error_Handler(__FILE__, __LINE__);
         }
+
+        #ifdef DEBUG_INFO
+        // Reset debugging vars
+        adc1_conversion_time = 0;
+        adc2_conversion_time = 0;
+        adc3_conversion_time = 0;
+        #endif
       }
     }
   }

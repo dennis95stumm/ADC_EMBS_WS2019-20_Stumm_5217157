@@ -50,6 +50,17 @@ uint32_t adc1_converted_value;
 uint32_t adc2_converted_value;
 uint32_t adc3_converted_value;
 
+#ifdef DEBUG_INFO
+uint32_t adc1_last_eoc = 0;
+uint32_t adc1_conversion_time = 0;
+
+uint32_t adc2_last_eoc = 0;
+uint32_t adc2_conversion_time = 0;
+
+uint32_t adc3_last_eoc = 0;
+uint32_t adc3_conversion_time = 0;
+#endif
+
 /* ADC1 init function */
 void MX_ADC1_Init(void)
 {
@@ -266,16 +277,28 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
 {
   if(hadc->Instance==ADC1)
   {
+    #ifdef DEBUG_INFO
+    adc1_conversion_time = HAL_GetTick() - adc1_last_eoc;
+    adc1_last_eoc = HAL_GetTick();
+    #endif
     adc1_converted_value = HAL_ADC_GetValue(hadc);
     print_info("ADC1 converted value: %d", adc1_converted_value);
   }
   else if(hadc->Instance==ADC2)
   {
+    #ifdef DEBUG_INFO
+    adc2_conversion_time = HAL_GetTick() - adc2_last_eoc;
+    adc2_last_eoc = HAL_GetTick();
+    #endif
     adc2_converted_value = HAL_ADC_GetValue(hadc);
     print_info("ADC2 converted value: %d", adc2_converted_value);
   }
   else if(hadc->Instance==ADC3)
   {
+    #ifdef DEBUG_INFO
+    adc3_conversion_time = HAL_GetTick() - adc3_last_eoc;
+    adc3_last_eoc = HAL_GetTick();
+    #endif
     adc3_converted_value = HAL_ADC_GetValue(hadc);
     print_info("ADC3 converted value: %d", adc3_converted_value);
   }
