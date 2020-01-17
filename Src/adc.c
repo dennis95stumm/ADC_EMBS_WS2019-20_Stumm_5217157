@@ -39,16 +39,16 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "adc.h"
-
 #include "gpio.h"
-
-/* USER CODE BEGIN 0 */
-
-/* USER CODE END 0 */
+#include "configuration.h"
 
 ADC_HandleTypeDef hadc1;
 ADC_HandleTypeDef hadc2;
 ADC_HandleTypeDef hadc3;
+
+uint32_t adc1_converted_value;
+uint32_t adc2_converted_value;
+uint32_t adc3_converted_value;
 
 /* ADC1 init function */
 void MX_ADC1_Init(void)
@@ -57,13 +57,13 @@ void MX_ADC1_Init(void)
 
   /**Configure the global features of the ADC (Clock, Resolution, Data Alignment and number of conversion) */
   hadc1.Instance = ADC1;
-  hadc1.Init.ClockPrescaler = ADC_CLOCK_SYNC_PCLK_DIV2;
-  hadc1.Init.Resolution = ADC_RESOLUTION_12B;
+  hadc1.Init.ClockPrescaler = ADC1_CLOCK_PRESCALER;
+  hadc1.Init.Resolution = ADC1_RESOLUTION;
   hadc1.Init.ScanConvMode = DISABLE;
   hadc1.Init.ContinuousConvMode = DISABLE;
   hadc1.Init.DiscontinuousConvMode = DISABLE;
-  hadc1.Init.ExternalTrigConvEdge = ADC_EXTERNALTRIGCONVEDGE_RISING;
-  hadc1.Init.ExternalTrigConv = ADC_EXTERNALTRIGCONV_T2_TRGO;
+  hadc1.Init.ExternalTrigConvEdge = ADC1_EXTERNEL_TRIGGER_CONV_EDGE;
+  hadc1.Init.ExternalTrigConv = ADC1_EXTERNEL_TRIGGER_CONV;
   hadc1.Init.DataAlign = ADC_DATAALIGN_RIGHT;
   hadc1.Init.NbrOfConversion = 1;
   hadc1.Init.DMAContinuousRequests = DISABLE;
@@ -77,9 +77,9 @@ void MX_ADC1_Init(void)
   print_info("Configuration of ADC1 finished");
 
   /**Configure for the selected ADC regular channel its corresponding rank in the sequencer and its sample time. */
-  sConfig.Channel = ADC_CHANNEL_1;
+  sConfig.Channel = ADC1_CHANNEL;
   sConfig.Rank = 1;
-  sConfig.SamplingTime = ADC_SAMPLETIME_480CYCLES;
+  sConfig.SamplingTime = ADC1_SAMPLETIME;
 
   print_info("Configuring ADC1 channel");
   if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
@@ -96,13 +96,13 @@ void MX_ADC2_Init(void)
 
   /**Configure the global features of the ADC (Clock, Resolution, Data Alignment and number of conversion) */
   hadc2.Instance = ADC2;
-  hadc2.Init.ClockPrescaler = ADC_CLOCK_SYNC_PCLK_DIV2;
-  hadc2.Init.Resolution = ADC_RESOLUTION_12B;
+  hadc2.Init.ClockPrescaler = ADC2_CLOCK_PRESCALER;
+  hadc2.Init.Resolution = ADC2_RESOLUTION;
   hadc2.Init.ScanConvMode = DISABLE;
   hadc2.Init.ContinuousConvMode = DISABLE;
   hadc2.Init.DiscontinuousConvMode = DISABLE;
-  hadc2.Init.ExternalTrigConvEdge = ADC_EXTERNALTRIGCONVEDGE_RISING;
-  hadc2.Init.ExternalTrigConv = ADC_EXTERNALTRIGCONV_T3_TRGO;
+  hadc2.Init.ExternalTrigConvEdge = ADC2_EXTERNEL_TRIGGER_CONV_EDGE;
+  hadc2.Init.ExternalTrigConv = ADC2_EXTERNEL_TRIGGER_CONV;
   hadc2.Init.DataAlign = ADC_DATAALIGN_RIGHT;
   hadc2.Init.NbrOfConversion = 1;
   hadc2.Init.DMAContinuousRequests = DISABLE;
@@ -116,9 +116,9 @@ void MX_ADC2_Init(void)
   print_info("Configuration of ADC2 finished");
 
   /**Configure for the selected ADC regular channel its corresponding rank in the sequencer and its sample time. */
-  sConfig.Channel = ADC_CHANNEL_2;
+  sConfig.Channel = ADC2_CHANNEL;
   sConfig.Rank = 1;
-  sConfig.SamplingTime = ADC_SAMPLETIME_480CYCLES;
+  sConfig.SamplingTime = ADC2_SAMPLETIME;
 
   print_info("Configuring ADC2 channel");
   if (HAL_ADC_ConfigChannel(&hadc2, &sConfig) != HAL_OK)
@@ -135,13 +135,13 @@ void MX_ADC3_Init(void)
 
   /**Configure the global features of the ADC (Clock, Resolution, Data Alignment and number of conversion) */
   hadc3.Instance = ADC3;
-  hadc3.Init.ClockPrescaler = ADC_CLOCK_SYNC_PCLK_DIV2;
-  hadc3.Init.Resolution = ADC_RESOLUTION_12B;
+  hadc3.Init.ClockPrescaler = ADC3_CLOCK_PRESCALER;
+  hadc3.Init.Resolution = ADC3_RESOLUTION;
   hadc3.Init.ScanConvMode = DISABLE;
   hadc3.Init.ContinuousConvMode = DISABLE;
   hadc3.Init.DiscontinuousConvMode = DISABLE;
-  hadc3.Init.ExternalTrigConvEdge = ADC_EXTERNALTRIGCONVEDGE_RISING;
-  hadc3.Init.ExternalTrigConv = ADC_EXTERNALTRIGCONV_T8_TRGO;
+  hadc3.Init.ExternalTrigConvEdge = ADC3_EXTERNEL_TRIGGER_CONV_EDGE;
+  hadc3.Init.ExternalTrigConv = ADC3_EXTERNEL_TRIGGER_CONV;
   hadc3.Init.DataAlign = ADC_DATAALIGN_RIGHT;
   hadc3.Init.NbrOfConversion = 1;
   hadc3.Init.DMAContinuousRequests = DISABLE;
@@ -155,9 +155,9 @@ void MX_ADC3_Init(void)
   print_info("Configuration of ADC3 finished");
 
   /**Configure for the selected ADC regular channel its corresponding rank in the sequencer and its sample time. */
-  sConfig.Channel = ADC_CHANNEL_3;
+  sConfig.Channel = ADC3_CHANNEL;
   sConfig.Rank = 1;
-  sConfig.SamplingTime = ADC_SAMPLETIME_480CYCLES;
+  sConfig.SamplingTime = ADC3_SAMPLETIME;
 
   print_info("Configuring ADC3 channel");
   if (HAL_ADC_ConfigChannel(&hadc3, &sConfig) != HAL_OK)
@@ -173,8 +173,9 @@ void HAL_ADC_MspInit(ADC_HandleTypeDef* adcHandle)
   if(adcHandle->Instance==ADC1)
   {
     /* ADC1 clock enable */
-    print_info("Enabling ADC1 clock");
+    print_info("Enabling ADC1 and correspoind GPIO clocks");
     __HAL_RCC_ADC1_CLK_ENABLE();
+    ADC1_CHANNEL_GPIO_CLOCK_ENABLE();
   
     /** ADC1 GPIO Configuration */
     GPIO_InitStruct.Pin = adc1_input_channel_Pin;
@@ -182,12 +183,17 @@ void HAL_ADC_MspInit(ADC_HandleTypeDef* adcHandle)
     GPIO_InitStruct.Pull = GPIO_NOPULL;
     print_info("Initializing ADC1 GPIO");
     HAL_GPIO_Init(adc1_input_channel_GPIO_Port, &GPIO_InitStruct);
+
+    print_info("Enabling ADC IRQ");
+    HAL_NVIC_SetPriority(ADC_IRQn, 0, 0);
+    HAL_NVIC_EnableIRQ(ADC_IRQn);
   }
   else if(adcHandle->Instance==ADC2)
   {
     /* ADC2 clock enable */
-    print_info("Enabling ADC2 clock");
+    print_info("Enabling ADC2 and correspoind GPIO clocks");
     __HAL_RCC_ADC2_CLK_ENABLE();
+    ADC2_CHANNEL_GPIO_CLOCK_ENABLE();
   
     /** ADC2 GPIO Configuration */
     GPIO_InitStruct.Pin = adc2_input_channel_Pin;
@@ -199,8 +205,9 @@ void HAL_ADC_MspInit(ADC_HandleTypeDef* adcHandle)
   else if(adcHandle->Instance==ADC3)
   {
     /* ADC3 clock enable */
-    print_info("Enabling ADC3 clock");
+    print_info("Enabling ADC3 and correspoind GPIO clocks");
     __HAL_RCC_ADC3_CLK_ENABLE();
+    ADC3_CHANNEL_GPIO_CLOCK_ENABLE();
   
     /** ADC3 GPIO Configuration */
     GPIO_InitStruct.Pin = adc3_input_channel_Pin;
@@ -216,6 +223,9 @@ void HAL_ADC_MspDeInit(ADC_HandleTypeDef* adcHandle)
 
   if(adcHandle->Instance==ADC1)
   {
+    print_info("Disabling ADC IRQ");
+    HAL_NVIC_DisableIRQ(ADC_IRQn);
+
     /* Peripheral clock disable */
     print_info("Disabling ADC1 clock");
     __HAL_RCC_ADC1_CLK_DISABLE();
@@ -244,7 +254,32 @@ void HAL_ADC_MspDeInit(ADC_HandleTypeDef* adcHandle)
     print_info("Deinitializing ADC3 GPIO");
     HAL_GPIO_DeInit(adc3_input_channel_GPIO_Port, adc3_input_channel_Pin);
   }
-} 
+}
+
+/**
+  * @brief  Regular conversion complete callback in non blocking mode 
+  * @param  hadc: pointer to a ADC_HandleTypeDef structure that contains
+  *         the configuration information for the specified ADC.
+  * @retval None
+  */
+void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
+{
+  if(hadc->Instance==ADC1)
+  {
+    adc1_converted_value = HAL_ADC_GetValue(hadc);
+    print_info("ADC1 converted value: %d", adc1_converted_value);
+  }
+  else if(hadc->Instance==ADC2)
+  {
+    adc2_converted_value = HAL_ADC_GetValue(hadc);
+    print_info("ADC2 converted value: %d", adc2_converted_value);
+  }
+  else if(hadc->Instance==ADC3)
+  {
+    adc3_converted_value = HAL_ADC_GetValue(hadc);
+    print_info("ADC3 converted value: %d", adc3_converted_value);
+  }
+}
 
 /**
   * @}

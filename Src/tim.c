@@ -40,23 +40,23 @@
 /* Includes ------------------------------------------------------------------*/
 #include "tim.h"
 
-TIM_HandleTypeDef htim2;
-TIM_HandleTypeDef htim3;
-TIM_HandleTypeDef htim8;
+TIM_HandleTypeDef htim_adc1;
+TIM_HandleTypeDef htim_adc2;
+TIM_HandleTypeDef htim_adc3;
 
-/* TIM2 init function */
-void MX_TIM2_Init(void)
+/* ADC1 TIM init function */
+void MX_ADC1_TIM_Init(void)
 {
   TIM_ClockConfigTypeDef sClockSourceConfig;
   TIM_MasterConfigTypeDef sMasterConfig;
 
-  htim2.Instance = TIM2;
-  htim2.Init.Prescaler = 491;
-  htim2.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim2.Init.Period = 0;
-  htim2.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+  htim_adc1.Instance = ADC1_TIMER_INSTANCE;
+  htim_adc1.Init.Prescaler = ADC1_TIMER_PRESCALER;
+  htim_adc1.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim_adc1.Init.Period = ADC1_TIMER_PERIOD;
+  htim_adc1.Init.ClockDivision = ADC1_TIMER_CLOCK_DIVISION;
   print_info("Initializing timer base for ADC1");
-  if (HAL_TIM_Base_Init(&htim2) != HAL_OK)
+  if (HAL_TIM_Base_Init(&htim_adc1) != HAL_OK)
   {
     _Error_Handler(__FILE__, __LINE__);
   }
@@ -64,35 +64,35 @@ void MX_TIM2_Init(void)
 
   sClockSourceConfig.ClockSource = TIM_CLOCKSOURCE_INTERNAL;
   print_info("Configuring clock source of timer for ADC1");
-  if (HAL_TIM_ConfigClockSource(&htim2, &sClockSourceConfig) != HAL_OK)
+  if (HAL_TIM_ConfigClockSource(&htim_adc1, &sClockSourceConfig) != HAL_OK)
   {
     _Error_Handler(__FILE__, __LINE__);
   }
   print_info("Configuration of clock source of timer for ADC1 finished");
 
-  sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
+  sMasterConfig.MasterOutputTrigger = TIM_TRGO_UPDATE;
   sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
   print_info("Configuring timer for ADC1 in master mode");
-  if (HAL_TIMEx_MasterConfigSynchronization(&htim2, &sMasterConfig) != HAL_OK)
+  if (HAL_TIMEx_MasterConfigSynchronization(&htim_adc1, &sMasterConfig) != HAL_OK)
   {
     _Error_Handler(__FILE__, __LINE__);
   }
   print_info("Configuration of timer for ADC1 in master mode finished");
 }
 
-/* TIM3 init function */
-void MX_TIM3_Init(void)
+/* ADC2 TIM init function */
+void MX_ADC2_TIM_Init(void)
 {
   TIM_ClockConfigTypeDef sClockSourceConfig;
   TIM_MasterConfigTypeDef sMasterConfig;
 
-  htim3.Instance = TIM3;
-  htim3.Init.Prescaler = 491;
-  htim3.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim3.Init.Period = 0;
-  htim3.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+  htim_adc2.Instance = ADC2_TIMER_INSTANCE;
+  htim_adc2.Init.Prescaler = ADC2_TIMER_PRESCALER;
+  htim_adc2.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim_adc2.Init.Period = ADC2_TIMER_PERIOD;
+  htim_adc2.Init.ClockDivision = ADC2_TIMER_CLOCK_DIVISION;
   print_info("Initializing timer base for ADC2");
-  if (HAL_TIM_Base_Init(&htim3) != HAL_OK)
+  if (HAL_TIM_Base_Init(&htim_adc2) != HAL_OK)
   {
     _Error_Handler(__FILE__, __LINE__);
   }
@@ -100,36 +100,36 @@ void MX_TIM3_Init(void)
 
   sClockSourceConfig.ClockSource = TIM_CLOCKSOURCE_INTERNAL;
   print_info("Configuring clock source of timer for ADC2");
-  if (HAL_TIM_ConfigClockSource(&htim3, &sClockSourceConfig) != HAL_OK)
+  if (HAL_TIM_ConfigClockSource(&htim_adc2, &sClockSourceConfig) != HAL_OK)
   {
     _Error_Handler(__FILE__, __LINE__);
   }
   print_info("Configuration of clock source of timer for ADC2 finished");
 
-  sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
+  sMasterConfig.MasterOutputTrigger = TIM_TRGO_UPDATE;
   sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
   print_info("Configuring timer for ADC2 in master mode");
-  if (HAL_TIMEx_MasterConfigSynchronization(&htim3, &sMasterConfig) != HAL_OK)
+  if (HAL_TIMEx_MasterConfigSynchronization(&htim_adc2, &sMasterConfig) != HAL_OK)
   {
     _Error_Handler(__FILE__, __LINE__);
   }
   print_info("Configuration of timer for ADC2 in master mode finished");
 }
 
-/* TIM8 init function */
-void MX_TIM8_Init(void)
+/* ADC3 TIM init function */
+void MX_ADC3_TIM_Init(void)
 {
   TIM_ClockConfigTypeDef sClockSourceConfig;
   TIM_MasterConfigTypeDef sMasterConfig;
 
-  htim8.Instance = TIM8;
-  htim8.Init.Prescaler = 491;
-  htim8.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim8.Init.Period = 0;
-  htim8.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
-  htim8.Init.RepetitionCounter = 0;
+  htim_adc3.Instance = ADC3_TIMER_INSTANCE;
+  htim_adc3.Init.Prescaler = ADC3_TIMER_PRESCALER;
+  htim_adc3.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim_adc3.Init.Period = ADC3_TIMER_PERIOD;
+  htim_adc3.Init.ClockDivision = ADC3_TIMER_CLOCK_DIVISION;
+  htim_adc3.Init.RepetitionCounter = 0;
   print_info("Initializing timer base for ADC3");
-  if (HAL_TIM_Base_Init(&htim8) != HAL_OK)
+  if (HAL_TIM_Base_Init(&htim_adc3) != HAL_OK)
   {
     _Error_Handler(__FILE__, __LINE__);
   }
@@ -137,16 +137,16 @@ void MX_TIM8_Init(void)
 
   sClockSourceConfig.ClockSource = TIM_CLOCKSOURCE_INTERNAL;
   print_info("Configuring clock source of timer for ADC3");
-  if (HAL_TIM_ConfigClockSource(&htim8, &sClockSourceConfig) != HAL_OK)
+  if (HAL_TIM_ConfigClockSource(&htim_adc3, &sClockSourceConfig) != HAL_OK)
   {
     _Error_Handler(__FILE__, __LINE__);
   }
   print_info("Configuration of clock source of timer for ADC3 finished");
 
-  sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
+  sMasterConfig.MasterOutputTrigger = TIM_TRGO_UPDATE;
   sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
   print_info("Configuring timer for ADC3 in master mode");
-  if (HAL_TIMEx_MasterConfigSynchronization(&htim8, &sMasterConfig) != HAL_OK)
+  if (HAL_TIMEx_MasterConfigSynchronization(&htim_adc3, &sMasterConfig) != HAL_OK)
   {
     _Error_Handler(__FILE__, __LINE__);
   }
@@ -155,45 +155,45 @@ void MX_TIM8_Init(void)
 
 void HAL_TIM_Base_MspInit(TIM_HandleTypeDef* tim_baseHandle)
 {
-  if(tim_baseHandle->Instance==TIM2)
+  if(tim_baseHandle->Instance==ADC1_TIMER_INSTANCE)
   {
     /* Peripheral clock enable */
     print_info("Enabling clock of timer for ADC1");
-    __HAL_RCC_TIM2_CLK_ENABLE();
+    ADC1_TIMER_CLK_ENABLE();
   }
-  else if(tim_baseHandle->Instance==TIM3)
+  else if(tim_baseHandle->Instance==ADC2_TIMER_INSTANCE)
   {
     /* Peripheral clock enable */
     print_info("Enabling clock of timer for ADC2");
-    __HAL_RCC_TIM3_CLK_ENABLE();
+    ADC2_TIMER_CLK_ENABLE();
   }
-  else if(tim_baseHandle->Instance==TIM8)
+  else if(tim_baseHandle->Instance==ADC3_TIMER_INSTANCE)
   {
     /* Peripheral clock enable */
     print_info("Enabling clock of timer for ADC3");
-    __HAL_RCC_TIM8_CLK_ENABLE();
+    ADC3_TIMER_CLK_ENABLE();
   }
 }
 
 void HAL_TIM_Base_MspDeInit(TIM_HandleTypeDef* tim_baseHandle)
 {
-  if(tim_baseHandle->Instance==TIM2)
+  if(tim_baseHandle->Instance==ADC1_TIMER_INSTANCE)
   {
     /* Peripheral clock disable */
     print_info("Disabling clock of timer for ADC1");
-    __HAL_RCC_TIM2_CLK_DISABLE();
+    ADC1_TIMER_CLK_DISABLE();
   }
-  else if(tim_baseHandle->Instance==TIM3)
+  else if(tim_baseHandle->Instance==ADC2_TIMER_INSTANCE)
   {
     /* Peripheral clock disable */
     print_info("Disabling clock of timer for ADC2");
-    __HAL_RCC_TIM3_CLK_DISABLE();
+    ADC2_TIMER_CLK_DISABLE();
   }
-  else if(tim_baseHandle->Instance==TIM8)
+  else if(tim_baseHandle->Instance==ADC3_TIMER_INSTANCE)
   {
     /* Peripheral clock disable */
     print_info("Disabling clock of timer for ADC3");
-    __HAL_RCC_TIM8_CLK_DISABLE();
+    ADC3_TIMER_CLK_DISABLE();
   }
 } 
 

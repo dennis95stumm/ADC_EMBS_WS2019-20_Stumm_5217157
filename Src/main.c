@@ -50,12 +50,13 @@
   * stopped by stopping the corresponding timers and adc. During the
   * initialization all information and errors can be printed out via printf
   * depending on the configuration. If the application is ready to start the
-  * measurements the green led will be turned on. On errors the red led will be
-  * turned on. During measurements the green led will blink. All the
-  * configurations of the system can be found in the configuration.h.
-  * @test To ensure that the red led is turned on if an error, e.g. wrong
+  * measurements the defined success led will be turned on. On errors the defined
+  * error led will be turned on. During measurements the success led will be
+  * deactivated and on stopping the measurements the success led will be turned on.
+  * All the configurations of the system can be found in the configuration.h.
+  * @test To ensure that the error led is turned on if an error, e.g. wrong
   *   configuration, occurs, the configuration is setup incorrect.
-  * @test To ensure that the green led is turned on when the measurement is ready
+  * @test To ensure that the success led is turned on when the measurement is ready
   *   to start, a flag is turned on that indicates that the system is ready,
   *   which is checked with the STMStudio.
   * @test To ensure that the switch functionallity works correctly the time
@@ -104,7 +105,7 @@ int main(void)
   /* Print information messages starting from here,
    * because after this step only the clock gets the correct value
    */
-  print_info("### Configuration of system clock finished ###");
+  print_info("### Finished initialization of HAL Library, GPIOs and system clock ###");
 
   /* Initialize all configured peripherals */
   print_info("### Initializing ADC1 ###");
@@ -117,16 +118,19 @@ int main(void)
   MX_ADC3_Init();
   print_info("### Initialization of ADC3 finished ###");
   print_info("### Initializing timer for ADC1 ###");
-  MX_TIM2_Init();
+  MX_ADC1_TIM_Init();
   print_info("### Initialization of timer for ADC1 finished ###");
   print_info("### Initializing timer for ADC2 ###");
-  MX_TIM3_Init();
+  MX_ADC2_TIM_Init();
   print_info("### Initialization of timer for ADC2 finished ###");
   print_info("### Initializing timer for ADC3 ###");
-  MX_TIM8_Init();
+  MX_ADC3_TIM_Init();
   print_info("### Initialization of timer for ADC3 finished ###");
 
-  HAL_GPIO_WritePin(green_led_GPIO_Port, green_led_Pin, GPIO_PIN_SET);
+  print_info("### System initialization finished successfully ###");
+  print_info("### System is ready for conversion... ###\n############################################");
+
+  HAL_GPIO_WritePin(success_led_GPIO_Port, success_led_Pin, GPIO_PIN_SET);
 
   /* Infinite loop */
   while (1)
@@ -149,13 +153,13 @@ void SystemClock_Config(void)
   /**Initializes the CPU, AHB and APB busses clocks */
   RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI;
   RCC_OscInitStruct.HSIState = RCC_HSI_ON;
-  RCC_OscInitStruct.HSICalibrationValue = 16;
+  RCC_OscInitStruct.HSICalibrationValue = SYSCLK_HSI_CALIBRATION_VAL;
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
   RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSI;
-  RCC_OscInitStruct.PLL.PLLM = 8;
-  RCC_OscInitStruct.PLL.PLLN = 144;
-  RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
-  RCC_OscInitStruct.PLL.PLLQ = 4;
+  RCC_OscInitStruct.PLL.PLLM = SYSCLK_PLLM;
+  RCC_OscInitStruct.PLL.PLLN = SYSCLK_PLLN;
+  RCC_OscInitStruct.PLL.PLLP = SYSCLK_PLLP;
+  RCC_OscInitStruct.PLL.PLLQ = SYSCLK_PLLQ;
   if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
   {
     _Error_Handler(__FILE__, __LINE__);
@@ -165,11 +169,11 @@ void SystemClock_Config(void)
   RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
                               |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
   RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
-  RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
-  RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV4;
-  RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV4;
+  RCC_ClkInitStruct.AHBCLKDivider = SYSCLK_AHBCLK_DIV;
+  RCC_ClkInitStruct.APB1CLKDivider = SYSCLK_APB1CLK_DIV;
+  RCC_ClkInitStruct.APB2CLKDivider = SYSCLK_APB2CLK_DIV;
 
-  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_4) != HAL_OK)
+  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, SYSCLK_FLASH_LATENCY) != HAL_OK)
   {
     _Error_Handler(__FILE__, __LINE__);
   }
@@ -189,14 +193,14 @@ void SystemClock_Config(void)
   * name of the source file and the source line number where the error has
   * occurred.
   * @param file: pointer to the source file name
-  * @param line: assert_param error line source number
+  * @param line: error line source number
   * @retval None
   */
 void _Error_Handler(char * file, int line)
 {
   print_error("Error occured in: file %s on line %d\r\n", file, line);
-  HAL_GPIO_WritePin(red_led_GPIO_Port, red_led_Pin, GPIO_PIN_SET);
-  while(1) 
+  HAL_GPIO_WritePin(error_led_GPIO_Port, error_led_Pin, GPIO_PIN_SET);
+  while(1)
   {
   }
 }
@@ -213,6 +217,10 @@ void _Error_Handler(char * file, int line)
 void assert_failed(uint8_t* file, uint32_t line)
 {
   print_error("Wrong parameters value: file %s on line %d\r\n", file, line);
+  HAL_GPIO_WritePin(error_led_GPIO_Port, error_led_Pin, GPIO_PIN_SET);
+  while(1)
+  {
+  }
 }
 
 #endif

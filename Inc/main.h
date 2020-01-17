@@ -38,26 +38,11 @@
 /* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef __MAIN_H
 #define __MAIN_H
-  /* Includes ------------------------------------------------------------------*/
 
-/* USER CODE BEGIN Includes */
+/* Includes ------------------------------------------------------------------*/
 #include "configuration.h"
-/* USER CODE END Includes */
 
 /* Private define ------------------------------------------------------------*/
-
-#define user_button_Pin GPIO_PIN_0
-#define user_button_GPIO_Port GPIOA
-#define adc1_input_channel_Pin GPIO_PIN_1
-#define adc1_input_channel_GPIO_Port GPIOA
-#define adc2_input_channel_Pin GPIO_PIN_2
-#define adc2_input_channel_GPIO_Port GPIOA
-#define adc3_input_channel_Pin GPIO_PIN_3
-#define adc3_input_channel_GPIO_Port GPIOA
-#define green_led_Pin GPIO_PIN_13
-#define green_led_GPIO_Port GPIOG
-#define red_led_Pin GPIO_PIN_14
-#define red_led_GPIO_Port GPIOG
 
 #ifdef DEBUG_INFO
 #define print_info(...) printf("INFO: "); printf(__VA_ARGS__); printf("\n");

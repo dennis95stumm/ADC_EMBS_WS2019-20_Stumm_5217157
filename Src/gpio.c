@@ -39,16 +39,28 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "gpio.h"
-/* USER CODE BEGIN 0 */
+#include "adc.h"
+#include "tim.h"
 
-/* USER CODE END 0 */
+/* Private variables ---------------------------------------------------------*/
+/**
+ *
+ */
+uint32_t button_press_time = NULL;
+
+/**
+ *
+ */
+uint32_t button_press_duration = NULL;
+
+/**
+ *
+ */
+uint8_t conversion_running = 0;
 
 /*----------------------------------------------------------------------------*/
 /* Configure GPIO                                                             */
 /*----------------------------------------------------------------------------*/
-/* USER CODE BEGIN 1 */
-
-/* USER CODE END 1 */
 
 /** Configure pins as 
         * Analog 
@@ -63,12 +75,14 @@ void MX_GPIO_Init(void)
   GPIO_InitTypeDef GPIO_InitStruct;
 
   /* GPIO Ports Clock Enable */
-  __HAL_RCC_GPIOA_CLK_ENABLE();
-  __HAL_RCC_GPIOG_CLK_ENABLE();
+  user_button_GPIO_clk_enable();
+  success_led_GPIO_clk_enable();
+  error_led_GPIO_clk_enable();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOG, green_led_Pin|red_led_Pin, GPIO_PIN_RESET);
-
+  HAL_GPIO_WritePin(success_led_GPIO_Port, success_led_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(error_led_GPIO_Port, error_led_Pin, GPIO_PIN_RESET);
+  
   /*Configure GPIO pin : PtPin */
   GPIO_InitStruct.Pin = user_button_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING_FALLING;
@@ -77,28 +91,129 @@ void MX_GPIO_Init(void)
   HAL_GPIO_Init(user_button_GPIO_Port, &GPIO_InitStruct);
 
   // Enable interrupt
-  HAL_NVIC_SetPriority(EXTI0_IRQn, 2, 0);
+  HAL_NVIC_SetPriority(EXTI0_IRQn, 0, 0);
   HAL_NVIC_EnableIRQ(EXTI0_IRQn);
 
   /*Configure GPIO pins : PGPin PGPin */
-  GPIO_InitStruct.Pin = green_led_Pin|red_led_Pin;
+  GPIO_InitStruct.Pin = success_led_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_PULLDOWN;
   GPIO_InitStruct.Speed = GPIO_SPEED_FAST;
-  HAL_GPIO_Init(GPIOG, &GPIO_InitStruct);
-
+  HAL_GPIO_Init(success_led_GPIO_Port, &GPIO_InitStruct);
+  
+  GPIO_InitStruct.Pin = error_led_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_PULLDOWN;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FAST;
+  HAL_GPIO_Init(error_led_GPIO_Port, &GPIO_InitStruct);
 }
 
-/* USER CODE BEGIN 2 */
-
+/**
+ * TODO: Add documentation
+ */
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
-  if (GPIO_Pin == user_button_Pin) {
-    // TODO: Check the time and state of adc and toggle adc on/off
+  if (GPIO_Pin == user_button_Pin)
+  {
+    if (HAL_GPIO_ReadPin(user_button_GPIO_Port, user_button_Pin) == GPIO_PIN_SET && button_press_time == NULL)
+    {
+      button_press_time = HAL_GetTick();
+      print_info("User Button pressed at %d", button_press_time);
+    }
+    else if (HAL_GPIO_ReadPin(user_button_GPIO_Port, user_button_Pin) == GPIO_PIN_RESET && button_press_time != NULL)
+    {
+      button_press_duration = HAL_GetTick() - button_press_time;
+      button_press_time = NULL;
+      print_info("User Button released after %d", button_press_duration);
+
+      if (button_press_duration >= BUTTON_PRESSURE_START && conversion_running == 0)
+      {
+        conversion_running = 1;
+        print_info("Starting conversion...\n############################################");
+        HAL_GPIO_WritePin(success_led_GPIO_Port, success_led_Pin, GPIO_PIN_RESET);
+
+        // ADC1
+        if(HAL_ADC_Start_IT(&hadc1) != HAL_OK)
+        {
+          /* Start Conversation Error */
+          _Error_Handler(__FILE__, __LINE__);
+        }
+        if(HAL_TIM_Base_Start(&htim_adc1) != HAL_OK)
+        {
+          /* Counter Enable Error */
+          _Error_Handler(__FILE__, __LINE__);
+        }
+        
+        // ADC2
+        if(HAL_ADC_Start_IT(&hadc2) != HAL_OK)
+        {
+          /* Start Conversation Error */
+          _Error_Handler(__FILE__, __LINE__);
+        }
+        if(HAL_TIM_Base_Start(&htim_adc2) != HAL_OK)
+        {
+          /* Counter Enable Error */
+          _Error_Handler(__FILE__, __LINE__);
+        }
+        
+        // ADC3
+        if(HAL_ADC_Start_IT(&hadc3) != HAL_OK)
+        {
+          /* Start Conversation Error */
+          _Error_Handler(__FILE__, __LINE__);
+        }
+        if(HAL_TIM_Base_Start(&htim_adc3) != HAL_OK)
+        {
+          /* Counter Enable Error */
+          _Error_Handler(__FILE__, __LINE__);
+        }
+      }
+      else if (button_press_duration >= BUTTON_PRESSURE_STOP && conversion_running == 1)
+      {
+        conversion_running = 0;
+        print_info("Stopping conversion...\n############################################");
+        HAL_GPIO_WritePin(success_led_GPIO_Port, success_led_Pin, GPIO_PIN_SET);
+
+        // ADC1
+        if(HAL_TIM_Base_Stop(&htim_adc1) != HAL_OK)
+        {
+          /* Counter Disable Error */
+          _Error_Handler(__FILE__, __LINE__);
+        }
+        if(HAL_ADC_Stop_IT(&hadc1) != HAL_OK)
+        {
+          /* Stop Conversation Error */
+          _Error_Handler(__FILE__, __LINE__);
+        }
+        
+        // ADC2
+        if(HAL_TIM_Base_Stop(&htim_adc2) != HAL_OK)
+        {
+          /* Counter Disable Error */
+          _Error_Handler(__FILE__, __LINE__);
+        }
+        if(HAL_ADC_Stop_IT(&hadc2) != HAL_OK)
+        {
+          /* Stop Conversation Error */
+          _Error_Handler(__FILE__, __LINE__);
+        }
+        
+        // ADC3
+        if(HAL_TIM_Base_Stop(&htim_adc3) != HAL_OK)
+        {
+          /* Counter Disable Error */
+          _Error_Handler(__FILE__, __LINE__);
+        }
+        if(HAL_ADC_Stop_IT(&hadc3) != HAL_OK)
+        {
+          /* Stop Conversation Error */
+          _Error_Handler(__FILE__, __LINE__);
+        }
+      }
+    }
   }
 }
 
-/* USER CODE END 2 */
 
 /**
   * @}

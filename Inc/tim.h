@@ -47,27 +47,18 @@
 #include "stm32f4xx_hal.h"
 #include "main.h"
 
-/* USER CODE BEGIN Includes */
 
-/* USER CODE END Includes */
+extern TIM_HandleTypeDef htim_adc1;
+extern TIM_HandleTypeDef htim_adc2;
+extern TIM_HandleTypeDef htim_adc3;
 
-extern TIM_HandleTypeDef htim2;
-extern TIM_HandleTypeDef htim3;
-extern TIM_HandleTypeDef htim8;
-
-/* USER CODE BEGIN Private defines */
-
-/* USER CODE END Private defines */
 
 extern void _Error_Handler(char *, int);
 
-void MX_TIM2_Init(void);
-void MX_TIM3_Init(void);
-void MX_TIM8_Init(void);
+void MX_ADC1_TIM_Init(void);
+void MX_ADC2_TIM_Init(void);
+void MX_ADC3_TIM_Init(void);
 
-/* USER CODE BEGIN Prototypes */
-
-/* USER CODE END Prototypes */
 
 #ifdef __cplusplus
 }
