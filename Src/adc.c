@@ -185,7 +185,7 @@ void HAL_ADC_MspInit(ADC_HandleTypeDef* adcHandle)
     HAL_GPIO_Init(adc1_input_channel_GPIO_Port, &GPIO_InitStruct);
 
     print_info("Enabling ADC IRQ");
-    HAL_NVIC_SetPriority(ADC_IRQn, 0, 0);
+    HAL_NVIC_SetPriority(ADC_IRQn, 1, 0);
     HAL_NVIC_EnableIRQ(ADC_IRQn);
   }
   else if(adcHandle->Instance==ADC2)
