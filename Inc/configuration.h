@@ -4,7 +4,10 @@
   * @author Dennis Stumm
   * @date 2019-2020
   * @version 1.0
-  * @brief 
+  * @brief This file contains the configuration of the application. Here the
+  *   logging, the gpio pins, sampling rate and the start and stop press
+  *   duration can be configured. The system configuration in the lower part
+  *   shouldn't be touched, in order to get a functioning application.
   ******************************************************************************
   */
   
@@ -14,27 +17,29 @@
 
 /* Debug configuration ------------------------------------------------------*/
 /**
- * @brief Uncomment the line below to expanse the "assert_param" macro in the 
- *        HAL drivers code.
- */
-/* #define USE_FULL_ASSERT    1U */
-
-/**
  * @brief To disable the info or error debug messages comment out the
- *   corresponding lines below.
+ *   corresponding lines below. To enable logs comment in the lines.
  */
-#define DEBUG_INFO
-#define DEBUG_ERROR
+/* #define DEBUG_INFO */
+/* #define DEBUG_ERROR */
 
 /* Configuration of button pressing time ------------------------------------*/
 
+/**
+ * @brief Definition of the time in milliseconds that the user button on the
+ *   user_button_Pin should be pressed, to start or to stop a measurement. The
+ *   starting time should be at least one second and maximum one second lower
+ *   than the stopping time.
+ */
 #define BUTTON_PRESSURE_START (uint32_t) 1000
 #define BUTTON_PRESSURE_STOP  (uint32_t) 5000
 
 /* Configuration of sampling rate -------------------------------------------*/
 
 /**
- * TODO: Add documentation max: 36585 Hz (ADC Clock(SysClk/APB1Presc/ADCPresc) divided by the sample time+resolution to get one value) min: 1 Hz
+ * @brief Sample rate of each of the three ADCs. They can be configured between
+ *   1 Hz and 36585 Hz, which is limited by the resolution, sampling time and
+ *   clock frequency that is configured by the program.
  */
 #define ADC1_SAMPLE_RATE 10
 #define ADC2_SAMPLE_RATE 10
@@ -42,14 +47,17 @@
 
 /* Configuration of GPIO ports and pins -------------------------------------*/
 /**
- * TODO: Add documentation
+ * @brief Configuration for the user button.
  */
 #define user_button_Pin GPIO_PIN_0
 #define user_button_GPIO_Port GPIOA
 #define user_button_GPIO_clk_enable() __HAL_RCC_GPIOA_CLK_ENABLE()
 
 /**
- * TODO: Add documentation
+ * @brief Configuration for the adc1 input channel. The channel can be one
+ *   of the ADC_channels between 1 and 15. The 0 channel can't be used, if the 
+ *   user button is activated. Also a channel used by this adc shouldn't be used
+ *   by another adc.
  */
 #define adc1_input_channel_Pin GPIO_PIN_1
 #define adc1_input_channel_GPIO_Port GPIOA
@@ -57,7 +65,10 @@
 #define ADC1_CHANNEL_GPIO_CLOCK_ENABLE() __HAL_RCC_GPIOA_CLK_ENABLE()
 
 /**
- * TODO: Add documentation
+ * @brief Configuration for the adc2 input channel. The channel can be one
+ *   of the ADC_channels between 1 and 15. The 0 channel can't be used, if the 
+ *   user button is activated. Also a channel used by this adc shouldn't be used
+ *   by another adc.
  */
 #define adc2_input_channel_Pin GPIO_PIN_2
 #define adc2_input_channel_GPIO_Port GPIOA
@@ -65,7 +76,10 @@
 #define ADC2_CHANNEL_GPIO_CLOCK_ENABLE() __HAL_RCC_GPIOA_CLK_ENABLE()
 
 /**
- * TODO: Add documentation
+ * @brief Configuration for the adc3 input channel. The channel can be one
+ *   of the ADC_channels between 1 and 15. The 0 channel can't be used, if the 
+ *   user button is activated. Also a channel used by this adc shouldn't be used
+ *   by another adc.
  */
 #define adc3_input_channel_Pin GPIO_PIN_3
 #define adc3_input_channel_GPIO_Port GPIOA
@@ -73,14 +87,16 @@
 #define ADC3_CHANNEL_GPIO_CLOCK_ENABLE() __HAL_RCC_GPIOA_CLK_ENABLE()
 
 /**
- * TODO: Add documentation
+ * @brief Configuration for the success status led. Default it is the led at
+ *   PG13 (green).
  */
 #define success_led_Pin GPIO_PIN_13
 #define success_led_GPIO_Port GPIOG
 #define success_led_GPIO_clk_enable() __HAL_RCC_GPIOG_CLK_ENABLE()
 
 /**
- * TODO: Add documentation
+ * @brief Configuration for the error status led. Default it is the led at
+ *   PG14 (red).
  */
 #define error_led_Pin GPIO_PIN_14
 #define error_led_GPIO_Port GPIOG
@@ -122,6 +138,11 @@
 
 /* ADC1 timer configuration -------------------------------------------------*/
 
+/**
+ * @brief Configuration of the timer for the adc1. The timer is set to TIM2.
+ *   Depending on the configured sample rate the prescaler and period gets
+ *   calculated.
+ */
 #define ADC1_TIMER_INSTANCE TIM2
 #if (TIMER_CLK_FREQUENCY/ADC1_SAMPLE_RATE) > 10000
 #define ADC1_TIMER_PRESCALER 10000-1
@@ -136,6 +157,11 @@
 
 /* ADC2 timer configuration -------------------------------------------------*/
 
+/**
+ * @brief Configuration of the timer for the adc2. The timer is set to TIM3.
+ *   Depending on the configured sample rate the prescaler and period gets
+ *   calculated.
+ */
 #define ADC2_TIMER_INSTANCE TIM3
 #if (TIMER_CLK_FREQUENCY/ADC2_SAMPLE_RATE) > 10000
 #define ADC2_TIMER_PRESCALER 10000-1
@@ -150,6 +176,11 @@
 
 /* ADC3 timer configuration -------------------------------------------------*/
 
+/**
+ * @brief Configuration of the timer for the adc3. The timer is set to TIM8.
+ *   Depending on the configured sample rate the prescaler and period gets
+ *   calculated.
+ */
 #define ADC3_TIMER_INSTANCE TIM8
 #if (TIMER_CLK_FREQUENCY/ADC3_SAMPLE_RATE) > 10000
 #define ADC3_TIMER_PRESCALER 10000-1
@@ -164,6 +195,13 @@
 
 /* ADC1 configuration -------------------------------------------------------*/
 
+/**
+ * @brief Configuration of adc. The clock is configred with a prescaler of 2
+ *   (APB1/2, 18 MHz). The resolution is set to 12 Bit and the sample time to
+ *   480 adc clock cycles (about 27,3 microseconds). The adc is configured to
+ *   start a conversion triggered by external source (TIM2 trigger out) on
+ *   rising edge.
+ */
 #define ADC1_CLOCK_PRESCALER ADC_CLOCK_SYNC_PCLK_DIV2
 #define ADC1_RESOLUTION ADC_RESOLUTION_12B
 #define ADC1_SAMPLETIME ADC_SAMPLETIME_480CYCLES
@@ -172,6 +210,13 @@
 
 /* ADC2 configuration -------------------------------------------------------*/
 
+/**
+ * @brief Configuration of adc. The clock is configred with a prescaler of 2
+ *   (APB1/2, 18 MHz). The resolution is set to 12 Bit and the sample time to
+ *   480 adc clock cycles (about 27,3 microseconds). The adc is configured to
+ *   start a conversion triggered by external source (TIM3 trigger out) on
+ *   rising edge.
+ */
 #define ADC2_CLOCK_PRESCALER ADC_CLOCK_SYNC_PCLK_DIV2
 #define ADC2_RESOLUTION ADC_RESOLUTION_12B
 #define ADC2_SAMPLETIME ADC_SAMPLETIME_480CYCLES
@@ -180,10 +225,25 @@
 
 /* ADC3 configuration -------------------------------------------------------*/
 
+
+/**
+ * @brief Configuration of adc. The clock is configred with a prescaler of 2
+ *   (APB1/2, 18 MHz). The resolution is set to 12 Bit and the sample time to
+ *   480 adc clock cycles (about 27,3 microseconds). The adc is configured to
+ *   start a conversion triggered by external source (TIM8 trigger out) on
+ *   rising edge.
+ */
 #define ADC3_CLOCK_PRESCALER ADC_CLOCK_SYNC_PCLK_DIV2
 #define ADC3_RESOLUTION ADC_RESOLUTION_12B
 #define ADC3_SAMPLETIME ADC_SAMPLETIME_480CYCLES
 #define ADC3_EXTERNEL_TRIGGER_CONV_EDGE ADC_EXTERNALTRIGCONVEDGE_RISING
 #define ADC3_EXTERNEL_TRIGGER_CONV ADC_EXTERNALTRIGCONV_T8_TRGO
+
+/* Assert -------------------------------------------------------------------*/
+
+/**
+ * @brief Enabled full assert to prevent wrong configuration.
+ */
+#define USE_FULL_ASSERT    1U
 
 #endif

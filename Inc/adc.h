@@ -35,6 +35,10 @@
   * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   *
   ******************************************************************************
+  * @author Dennis Stumm
+  * @date 2019-2020
+  * @version 1.0
+  ******************************************************************************
   */
 /* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef __adc_H
@@ -53,13 +57,42 @@ extern ADC_HandleTypeDef hadc2;
 extern ADC_HandleTypeDef hadc3;
 
 #ifdef DEBUG_INFO
+/**
+ * @brief SystemTick when the last end of conversion interrupt was executed for
+ *   the adc1.
+ */
 extern uint32_t adc1_last_eoc;
+
+/**
+ * @brief Time between the current and the last eoc interrupt for the adc1
+ *   in milliseconds.
+ */
 extern uint32_t adc1_conversion_time;
 
+
+/**
+ * @brief SystemTick when the last end of conversion interrupt was executed for
+ *   the adc2.
+ */
 extern uint32_t adc2_last_eoc;
+
+/**
+ * @brief Time between the current and the last eoc interrupt for the adc2
+ *   in milliseconds.
+ */
 extern uint32_t adc2_conversion_time;
 
+
+/**
+ * @brief SystemTick when the last end of conversion interrupt was executed for
+ *   the adc3.
+ */
 extern uint32_t adc3_last_eoc;
+
+/**
+ * @brief Time between the current and the last eoc interrupt for the adc3
+ *   in milliseconds.
+ */
 extern uint32_t adc3_conversion_time;
 #endif
 

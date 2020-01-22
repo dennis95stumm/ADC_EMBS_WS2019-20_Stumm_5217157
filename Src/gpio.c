@@ -35,28 +35,44 @@
   * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   *
   ******************************************************************************
+  * @author Dennis Stumm
+  * @date 2019-2020
+  * @version 1.0
+  ******************************************************************************
   */
 
 /* Includes ------------------------------------------------------------------*/
 #include "gpio.h"
 #include "adc.h"
 #include "tim.h"
+#include "main.h"
 
 /* Private variables ---------------------------------------------------------*/
 /**
- *
+ * @brief The time in milliseconds when the last interrupt by a rising edge of
+ *   the user_button was executed.
  */
 uint32_t button_press_time = NULL;
 
 /**
- *
+ * @brief The duration between the last rising and falling edge interrupt of
+ *   the user button.
  */
 uint32_t button_press_duration = NULL;
 
 /**
- *
+ * @brief Flag that indicates whether the analog digital conversion is running
+ *   or not.
  */
 uint8_t conversion_running = 0;
+
+
+#ifdef DEBUG_INFO
+/**
+ * @brief Counter containing the amount of button press (rising edge interrupts).
+ */
+uint8_t button_press_counter = 0;
+#endif
 
 /*----------------------------------------------------------------------------*/
 /* Configure GPIO                                                             */
@@ -109,19 +125,41 @@ void MX_GPIO_Init(void)
 }
 
 /**
- * TODO: Add documentation
+ * @brief Handles the user button interrupt caused by a rising or falling edge,
+ *   only if the system is finally configured. If it was a rising edge, the time
+ *   of button press gets saved, if the button_press_time var wasn't pressed
+ *   already. If it was a falling edge and a rising edge was before, the time
+ *   duration gets calculated. When the conversion isn't running already and
+ *   the duration exeeds the starting press time, the conversion gets started.
+ *   If the conversion already running and the duration exeeds the stopping time,
+ *   the conversion gets stopped.
+ * @param GPIO_Pin: Pin that raised the interrupt
+ * @retval None
  */
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
+  /* Only handle interrupts if the system is finally configured. */
+  if (system_ready == 0)
+  {
+    print_info("Button pressed while system not ready!");
+    return;
+  }
+
+  /* Check if the interrupt was raised by the user button*/
   if (GPIO_Pin == user_button_Pin)
   {
     if (HAL_GPIO_ReadPin(user_button_GPIO_Port, user_button_Pin) == GPIO_PIN_SET && button_press_time == NULL)
     {
       button_press_time = HAL_GetTick();
       print_info("User Button pressed at %d", button_press_time);
+
+      #ifdef DEBUG_INFO
+      button_press_counter = button_press_counter + 1;
+      #endif
     }
     else if (HAL_GPIO_ReadPin(user_button_GPIO_Port, user_button_Pin) == GPIO_PIN_RESET && button_press_time != NULL)
     {
+      /* Calculate the press duration, to start or stop the conversion. */
       button_press_duration = HAL_GetTick() - button_press_time;
       button_press_time = NULL;
       print_info("User Button released after %d", button_press_duration);

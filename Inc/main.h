@@ -34,6 +34,10 @@
   * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   *
   ******************************************************************************
+  * @author Dennis Stumm
+  * @date 2019-2020
+  * @version 1.0
+  ******************************************************************************
   */
 /* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef __MAIN_H
@@ -41,15 +45,22 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "configuration.h"
+#include <stdint.h>
 
 /* Private define ------------------------------------------------------------*/
 
+/**
+ * @brief Defines the print_info function depending on the DEBUG_INFO macro.
+ */
 #ifdef DEBUG_INFO
 #define print_info(...) printf("INFO: "); printf(__VA_ARGS__); printf("\n");
 #else
 #define print_info(...) ((void)0)
 #endif
 
+/**
+ * @brief Defines the print_error function depending on the DEBUG_ERROR macro.
+ */
 #ifdef DEBUG_ERROR
 #define print_error(...) printf("ERROR: "); printf(__VA_ARGS__); printf("\n");
 #else
@@ -59,6 +70,12 @@
 void _Error_Handler(char *, int);
 
 #define Error_Handler() _Error_Handler(__FILE__, __LINE__)
+
+/**
+ * @brief Flag that indicates whether the system is configured and ready or not.
+ *   If it is ready it is set to 1 otherwise it's value is 0.
+ */
+extern uint8_t system_ready;
 
 /**
   * @}

@@ -35,6 +35,10 @@
   * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   *
   ******************************************************************************
+  * @author Dennis Stumm
+  * @date 2019-2020
+  * @version 1.0
+  ******************************************************************************
   */
 
 /* Includes ------------------------------------------------------------------*/
@@ -46,18 +50,59 @@ ADC_HandleTypeDef hadc1;
 ADC_HandleTypeDef hadc2;
 ADC_HandleTypeDef hadc3;
 
+/**
+ * @brief Value converted by the adc1.
+ */
 uint32_t adc1_converted_value;
+
+/**
+ * @brief Value converted by the adc2.
+ */
 uint32_t adc2_converted_value;
+
+/**
+ * @brief Value converted by the adc3.
+ */
 uint32_t adc3_converted_value;
 
+
 #ifdef DEBUG_INFO
+/**
+ * @brief SystemTick when the last end of conversion interrupt was executed for
+ *   the adc1.
+ */
 uint32_t adc1_last_eoc = 0;
+
+/**
+ * @brief Time between the current and the last eoc interrupt for the adc1
+ *   in milliseconds.
+ */
 uint32_t adc1_conversion_time = 0;
 
+
+/**
+ * @brief SystemTick when the last end of conversion interrupt was executed for
+ *   the adc2.
+ */
 uint32_t adc2_last_eoc = 0;
+
+/**
+ * @brief Time between the current and the last eoc interrupt for the adc2
+ *   in milliseconds.
+ */
 uint32_t adc2_conversion_time = 0;
 
+
+/**
+ * @brief SystemTick when the last end of conversion interrupt was executed for
+ *   the adc3.
+ */
 uint32_t adc3_last_eoc = 0;
+
+/**
+ * @brief Time between the current and the last eoc interrupt for the adc3
+ *   in milliseconds.
+ */
 uint32_t adc3_conversion_time = 0;
 #endif
 
@@ -268,7 +313,10 @@ void HAL_ADC_MspDeInit(ADC_HandleTypeDef* adcHandle)
 }
 
 /**
-  * @brief  Regular conversion complete callback in non blocking mode 
+  * @brief  Regular conversion complete callback in non blocking mode. Depending
+  *   on the adc the converted value is saved to the adcx_converted_value
+  *   variable due to the next end of conversion interrupt. If the debug mode is
+  *   enabled, also the conversion time since last eoc gets persisted to a var.
   * @param  hadc: pointer to a ADC_HandleTypeDef structure that contains
   *         the configuration information for the specified ADC.
   * @retval None

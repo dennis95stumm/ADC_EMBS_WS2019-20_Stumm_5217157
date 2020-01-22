@@ -35,6 +35,10 @@
   * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   *
   ******************************************************************************
+  * @author Dennis Stumm
+  * @date 2019-2020
+  * @version 1.0
+  ******************************************************************************
   */
 
 /* Define to prevent recursive inclusion -------------------------------------*/

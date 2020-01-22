@@ -88,6 +88,11 @@
 #include "configuration.h"
 
 /* Private variables ---------------------------------------------------------*/
+/**
+ * @brief Flag that indicates whether the system is configured and ready or not.
+ *   If it is ready it is set to 1 otherwise it's value is 0.
+ */
+uint8_t system_ready = 0;
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
@@ -102,10 +107,18 @@ int main(void)
 
   /* Configure the system clock */
   SystemClock_Config();
+
   /* Print information messages starting from here,
    * because after this step only the clock gets the correct value
    */
   print_info("### Finished initialization of HAL Library, GPIOs and system clock ###");
+
+  /* Checking configuration parameters */
+  print_info("### Checking configuration parameters ###");
+  assert_param(BUTTON_PRESSURE_START >= 1000 && BUTTON_PRESSURE_START <= (BUTTON_PRESSURE_STOP - 1000));
+  assert_param(ADC1_SAMPLE_RATE >= 1 && ADC1_SAMPLE_RATE <= 36585);
+  assert_param(ADC2_SAMPLE_RATE >= 1 && ADC2_SAMPLE_RATE <= 36585);
+  assert_param(ADC3_SAMPLE_RATE >= 1 && ADC3_SAMPLE_RATE <= 36585);
 
   /* Initialize all configured peripherals */
   print_info("### Initializing ADC1 ###");
@@ -129,7 +142,9 @@ int main(void)
 
   print_info("### System initialization finished successfully ###");
   print_info("### System is ready for conversion... ###\n############################################");
+  system_ready = 1;
 
+  /* Enable success led */
   HAL_GPIO_WritePin(success_led_GPIO_Port, success_led_Pin, GPIO_PIN_SET);
 
   /* Infinite loop */

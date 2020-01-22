@@ -3,7 +3,7 @@
 
 
 ## Workflow
-
+![](Documentation/ADC_PAP.png)
 
 ## Configuration
 
