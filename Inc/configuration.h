@@ -197,8 +197,8 @@
 
 /**
  * @brief Configuration of adc. The clock is configred with a prescaler of 2
- *   (APB1/2, 18 MHz). The resolution is set to 12 Bit and the sample time to
- *   480 adc clock cycles (about 27,3 microseconds). The adc is configured to
+ *   (APB1/2 = 18 MHz). The resolution is set to 12 Bit and the sample time to
+ *   480 adc clock cycles (about 27.3 microseconds). The adc is configured to
  *   start a conversion triggered by external source (TIM2 trigger out) on
  *   rising edge.
  */
@@ -212,8 +212,8 @@
 
 /**
  * @brief Configuration of adc. The clock is configred with a prescaler of 2
- *   (APB1/2, 18 MHz). The resolution is set to 12 Bit and the sample time to
- *   480 adc clock cycles (about 27,3 microseconds). The adc is configured to
+ *   (APB1/2 = 18 MHz). The resolution is set to 12 Bit and the sample time to
+ *   480 adc clock cycles (about 27.3 microseconds). The adc is configured to
  *   start a conversion triggered by external source (TIM3 trigger out) on
  *   rising edge.
  */
@@ -228,8 +228,8 @@
 
 /**
  * @brief Configuration of adc. The clock is configred with a prescaler of 2
- *   (APB1/2, 18 MHz). The resolution is set to 12 Bit and the sample time to
- *   480 adc clock cycles (about 27,3 microseconds). The adc is configured to
+ *   (APB1/2 = 18 MHz). The resolution is set to 12 Bit and the sample time to
+ *   480 adc clock cycles (about 27.3 microseconds). The adc is configured to
  *   start a conversion triggered by external source (TIM8 trigger out) on
  *   rising edge.
  */
